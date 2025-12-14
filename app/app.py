@@ -5,20 +5,21 @@ import os
 
 app = Flask(__name__)
 
-raw_secret = os.getenv("RDS_SECRET")        #load secert from ECS
+# Load RDS credentials from Secrets Manager (passed via ECS env)
+raw_secret = os.getenv("RDS_SECRET")
 
-if raw_secret:
-    cleaned = raw_secret.strip().replace("\r", "").replace("\n", "")
-    creds = json.loads(cleaned)
+if not raw_secret:
+    raise RuntimeError("RDS_SECRET environment variable not set")
 
-    rds_username = creds.get("username")
-    rds_password = creds.get("password")
-else:
-    rds_username = None
-    rds_password = None
+creds = json.loads(raw_secret.strip())
+RDS_USERNAME = creds["username"]
+RDS_PASSWORD = creds["password"]
 
-# RDS HOST
+# RDS config
 RDS_HOST = os.getenv("RDS_HOST")
+if not RDS_HOST:
+    raise RuntimeError("RDS_HOST environment variable not set")
+
 RDS_DB = "testdb"
 
 
@@ -27,16 +28,23 @@ def hello():
     try:
         conn = pymysql.connect(
             host=RDS_HOST,
-            user=rds_username,
-            password=rds_password,
-            database=RDS_DB
+            user=RDS_USERNAME,
+            password=RDS_PASSWORD,
+            database=RDS_DB,
+            connect_timeout=5
         )
-        cursor = conn.cursor()
-        cursor.execute("SELECT 'RDS Connected!'")
-        result = cursor.fetchone()
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT 'RDS Connected!'")
+            result = cursor.fetchone()
+        conn.close()
         return f"Hello World from ECS → RDS! Message: {result[0]}"
     except Exception as e:
-        return f"Error connecting to RDS: {str(e)}"
+        return f"Error connecting to RDS: {str(e)}", 500
+
+
+@app.route("/health")
+def health():
+    return "OK", 200
 
 
 if __name__ == "__main__":

@@ -42,3 +42,25 @@ resource "docker_image" "app_image" {
     dockerfile = "Dockerfile"
   }
 }
+
+module "rds" {
+  source = "./project/rds"
+
+  project_name       = var.project_name
+  vpc_id             = var.vpc_id
+  private_subnet_ids = var.private_subnet_ids
+}
+
+module "network" {
+  source       = "./project/network"
+  project_name = var.project_name
+  vpc_cidr     = "10.0.0.0/16"
+}
+
+module "rds" {
+  source = "./project/rds"
+
+  project_name       = var.project_name
+  vpc_id             = module.network.vpc_id
+  private_subnet_ids = module.network.private_subnet_ids
+}
