@@ -67,14 +67,3 @@ resource "aws_route53_zone" "private" {
 
   comment = "Private hosted zone for internal services"
 }
-resource "aws_route53_record" "app" {
-  zone_id = aws_route53_zone.private.zone_id
-  name    = "app.internal"
-  type    = "A"
-
-  alias {
-    name                   = module.ecs.alb_dns_name
-    zone_id               = module.ecs.alb_zone_id
-    evaluate_target_health = true
-  }
-}

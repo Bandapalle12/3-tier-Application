@@ -64,3 +64,15 @@ module "ecs" {
   rds_secret_arn       = module.rds.secret_arn
   rds_host       = module.rds.rds_host
 }
+
+resource "aws_route53_record" "app" {
+  zone_id = aws_route53_zone.private.zone_id
+  name    = "app.internal"
+  type    = "A"
+
+  alias {
+    name                   = module.ecs.alb_dns_name
+    zone_id               = module.ecs.alb_zone_id
+    evaluate_target_health = true
+  }
+}
