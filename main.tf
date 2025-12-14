@@ -38,7 +38,7 @@ resource "docker_image" "app_image" {
   name = "${module.ecr.ecr_repo_uri}:latest"
 
   build {
-    context    = "${path.root}/.."
+    context    = "${path.root}/app"
     dockerfile = "Dockerfile"
   }
 }
