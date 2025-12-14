@@ -30,7 +30,7 @@ provider "docker" {
 }
 
 module "ecr" {
-  source       = "./ecr"
+  source       = "./project/ecr"
   project_name = var.project_name
 }
 
