@@ -22,7 +22,7 @@ variable "ecr_image" {
   type = string
 }
 
-variable "rds_endpoint" {
+variable "rds_host" {
   type = string
 }
 

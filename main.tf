@@ -61,6 +61,6 @@ module "ecs" {
   private_subnet_ids   = module.network.private_subnet_ids
 
   ecr_image            = "${module.ecr.ecr_repo_uri}:latest"
-  rds_endpoint         = module.rds.rds_endpoint
   rds_secret_arn       = module.rds.secret_arn
+  rds_host       = module.rds.rds_host
 }

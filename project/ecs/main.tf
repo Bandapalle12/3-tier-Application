@@ -140,7 +140,7 @@ resource "aws_ecs_cluster" "this" {
 }
 
 resource "aws_ecs_task_definition" "this" {
-  family                   = "${var.project_name}-task"
+  family                   = "${var.project_name}-task2"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = "256"
@@ -157,10 +157,12 @@ resource "aws_ecs_task_definition" "this" {
       containerPort = 3000
     }]
 
-    environment = [{
-      name  = "RDS_HOST"
-      value = var.rds_endpoint
-    }]
+    environment = [
+  {
+    name  = "RDS_HOST"
+    value = var.rds_host
+  }
+]
 
     secrets = [{
       name      = "RDS_SECRET"
