@@ -8,3 +8,7 @@ output "private_subnet_ids" {
     aws_subnet.private_2.id
   ]
 }
+
+output "public_subnet_ids" {
+  value = [aws_subnet.public.id]
+}
