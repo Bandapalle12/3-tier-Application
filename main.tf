@@ -38,10 +38,15 @@ resource "docker_image" "app_image" {
   name = "${module.ecr.ecr_repo_uri}:latest"
 
   build {
-    context    = "${path.root}/app"
+    context    = "./app"
     dockerfile = "Dockerfile"
   }
+
+  lifecycle {
+    replace_triggered_by = [timestamp()]
+  }
 }
+
 
 
 module "network" {
