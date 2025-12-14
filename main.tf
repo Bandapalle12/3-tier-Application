@@ -57,3 +57,18 @@ module "rds" {
   vpc_id             = module.network.vpc_id
   private_subnet_ids = module.network.private_subnet_ids
 }
+
+module "ecs" {
+  source = "./project/ecs"
+
+  project_name         = var.project_name
+  region               = var.aws_region
+
+  vpc_id               = module.network.vpc_id
+  public_subnet_ids    = module.network.public_subnet_ids
+  private_subnet_ids   = module.network.private_subnet_ids
+
+  ecr_image            = "${module.ecr.ecr_repo_uri}:latest"
+  rds_endpoint         = module.rds.rds_endpoint
+  rds_secret_arn       = module.rds.secret_arn
+}
