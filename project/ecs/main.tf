@@ -224,3 +224,8 @@ resource "aws_appautoscaling_policy" "cpu" {
     target_value = 60
   }
 }
+
+resource "aws_iam_role_policy_attachment" "exec_secrets_attach" {
+  role       = aws_iam_role.execution_role.name
+  policy_arn = aws_iam_policy.secrets_policy.arn
+}
