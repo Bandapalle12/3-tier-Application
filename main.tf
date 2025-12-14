@@ -42,11 +42,15 @@ resource "docker_image" "app_image" {
     dockerfile = "Dockerfile"
   }
 
-  lifecycle {
-    replace_triggered_by = [timestamp()]
-  }
+  depends_on = [null_resource.docker_rebuild]
 }
 
+
+resource "null_resource" "docker_rebuild" {
+  triggers = {
+    always_run = timestamp()
+  }
+}
 
 
 module "network" {
