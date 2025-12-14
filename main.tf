@@ -65,6 +65,16 @@ module "ecs" {
   rds_host       = module.rds.rds_host
 }
 
+resource "aws_route53_zone" "private" {
+  name = "internal"
+
+  vpc {
+    vpc_id = module.network.vpc_id
+  }
+
+  comment = "Private hosted zone for internal services"
+}
+
 resource "aws_route53_record" "app" {
   zone_id = aws_route53_zone.private.zone_id
   name    = "app.internal"

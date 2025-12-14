@@ -58,12 +58,4 @@ resource "aws_db_instance" "this" {
   publicly_accessible = false
   skip_final_snapshot = true
 }
-resource "aws_route53_zone" "private" {
-  name = "internal"
 
-  vpc {
-    vpc_id = module.network.vpc_id
-  }
-
-  comment = "Private hosted zone for internal services"
-}
