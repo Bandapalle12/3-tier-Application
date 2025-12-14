@@ -34,23 +34,6 @@ module "ecr" {
   project_name = var.project_name
 }
 
-resource "docker_image" "app_image" {
-  name = "${module.ecr.ecr_repo_uri}:latest"
-
-  build {
-    context    = "./app"
-    dockerfile = "Dockerfile"
-  }
-
-  depends_on = [null_resource.docker_rebuild]
-}
-
-
-resource "null_resource" "docker_rebuild" {
-  triggers = {
-    always_run = timestamp()
-  }
-}
 
 
 module "network" {
