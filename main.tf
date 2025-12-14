@@ -1,32 +1,44 @@
 terraform {
+  required_version = ">= 1.5.0"
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
+    docker = {
+      source  = "kreuzwerker/docker"
+      version = "~> 3.0"
+    }
   }
 }
 
 provider "aws" {
-  region = "us-east-1"
+  region = var.aws_region
 }
 
-module "ec2" {
-  source = "./modules/ec2"
+data "aws_caller_identity" "current" {}
 
-  ami_id        = "ami-0abcdef1234567890"   # Replace with valid AMI
-  instance_type = "t2.micro"
-  subnet_id     = "subnet-0123456789abcdef0"
-  key_name      = "my-keypair"
+data "aws_ecr_authorization_token" "token" {}
 
-  security_group_ids = [
-    "sg-0123456789abcdef0"
-  ]
+provider "docker" {
+  registry_auth {
+    address  = "${data.aws_caller_identity.current.account_id}.dkr.ecr.${var.aws_region}.amazonaws.com"
+    username = data.aws_ecr_authorization_token.token.user_name
+    password = data.aws_ecr_authorization_token.token.password
+  }
+}
 
-  instance_name = "simple-ec2"
+module "ecr" {
+  source       = "./ecr"
+  project_name = var.project_name
+}
 
-  tags = {
-    Environment = "dev"
-    Owner       = "terraform"
+resource "docker_image" "app_image" {
+  name = "${module.ecr.ecr_repo_uri}:latest"
+
+  build {
+    context    = "${path.root}/.."
+    dockerfile = "Dockerfile"
   }
 }

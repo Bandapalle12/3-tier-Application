@@ -1,0 +1,12 @@
+# Install the latest version
+flask
+pymysql
+
+# Install a specific version
+requests==2.31.0
+
+# Install version greater than or equal to
+numpy>=1.25.0
+
+# Install version within a range
+pandas>=2.0.0,<2.1.0
