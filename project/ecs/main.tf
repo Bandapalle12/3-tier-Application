@@ -1,14 +1,11 @@
-########################
+
 # CloudWatch Logs
-########################
 resource "aws_cloudwatch_log_group" "ecs" {
   name = "/ecs/${var.project_name}"
 }
 
 
-########################
 # IAM Roles
-########################
 resource "aws_iam_role" "execution_role" {
   name = "${var.project_name}-ecs-exec-role"
 
@@ -58,9 +55,7 @@ resource "aws_iam_role_policy_attachment" "secrets_attach" {
   policy_arn = aws_iam_policy.secrets_policy.arn
 }
 
-########################
 # Security Groups
-########################
 resource "aws_security_group" "alb" {
   name   = "${var.project_name}-alb-sg"
   vpc_id = var.vpc_id
@@ -99,9 +94,8 @@ resource "aws_security_group" "ecs" {
   }
 }
 
-########################
+
 # ALB
-########################
 resource "aws_lb" "this" {
   name               = "${var.project_name}-alb"
   load_balancer_type = "application"
@@ -132,9 +126,7 @@ resource "aws_lb_listener" "http" {
   }
 }
 
-########################
 # ECS
-########################
 resource "aws_ecs_cluster" "this" {
   name = "${var.project_name}-cluster"
 }
@@ -201,9 +193,8 @@ resource "aws_ecs_service" "this" {
   depends_on = [aws_lb_listener.http]
 }
 
-########################
+
 # Auto Scaling
-########################
 resource "aws_appautoscaling_target" "ecs" {
   max_capacity       = 3
   min_capacity       = 1

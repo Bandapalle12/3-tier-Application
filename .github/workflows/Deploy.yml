@@ -1,4 +1,4 @@
-name: Terraform ECR Deploy / Destroy
+name: Terraform 
 
 on:
   push:
@@ -34,16 +34,10 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      # -----------------------------
-      # Login to ECR
-      # -----------------------------
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      # -----------------------------
-      # Build & Push Docker Image
-      # -----------------------------
       - name: Build and push Docker image
         run: |
           ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
@@ -52,9 +46,6 @@ jobs:
           docker build -t ${ECR_URI}:latest ./app
           docker push ${ECR_URI}:latest
 
-      # -----------------------------
-      # Terraform
-      # -----------------------------
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:

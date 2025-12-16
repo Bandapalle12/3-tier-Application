@@ -13,7 +13,7 @@ resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.this.id
 }
 
-# Public Subnet (for NAT)
+# Public Subnets
 resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.this.id
   cidr_block              = "10.0.1.0/24"

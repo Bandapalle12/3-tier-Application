@@ -5,7 +5,7 @@ import os
 
 app = Flask(__name__)
 
-# Read secret injected by ECS
+# Read secret by ECS
 raw_secret = os.getenv("RDS_SECRET")
 if not raw_secret:
     raise RuntimeError("RDS_SECRET not set")
@@ -14,7 +14,7 @@ creds = json.loads(raw_secret)
 RDS_USERNAME = creds["username"]
 RDS_PASSWORD = creds["password"]
 
-# RDS endpoint injected by ECS
+# RDS endpoint by ECS
 RDS_HOST = os.getenv("RDS_HOST")
 if not RDS_HOST:
     raise RuntimeError("RDS_HOST not set")
