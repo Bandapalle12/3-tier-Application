@@ -5,7 +5,7 @@ resource "random_password" "db" {
 }
 
 resource "aws_secretsmanager_secret" "rds" {
-  name = "${var.project_name}-rds-secret"
+  name = "${var.project_name}-rds-secret--v2"
 }
 
 resource "aws_secretsmanager_secret_version" "rds" {
